@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as BrigadesRouteImport } from './routes/brigades'
 import { Route as ConfigurationRouteImport } from './routes/configuration'
 import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as DossiersRouteImport } from './routes/dossiers'
 import { Route as FacturationRouteImport } from './routes/facturation'
 import { Route as MarchesPrivesRouteImport } from './routes/marches-prives'
 import { Route as MarchesPublicsIndexRouteImport } from './routes/marches-publics.index'
@@ -36,6 +37,11 @@ const ConfigurationRoute = ConfigurationRouteImport.update({
 const DashboardRoute = DashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DossiersRoute = DossiersRouteImport.update({
+  id: '/dossiers',
+  path: '/dossiers',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FacturationRoute = FacturationRouteImport.update({
@@ -64,6 +70,7 @@ export interface FileRoutesByFullPath {
   '/brigades': typeof BrigadesRoute
   '/configuration': typeof ConfigurationRoute
   '/dashboard': typeof DashboardRoute
+  '/dossiers': typeof DossiersRoute
   '/facturation': typeof FacturationRoute
   '/marches-prives': typeof MarchesPrivesRoute
   '/marches-publics/$ref': typeof MarchesPublicsRefRoute
@@ -74,6 +81,7 @@ export interface FileRoutesByTo {
   '/brigades': typeof BrigadesRoute
   '/configuration': typeof ConfigurationRoute
   '/dashboard': typeof DashboardRoute
+  '/dossiers': typeof DossiersRoute
   '/facturation': typeof FacturationRoute
   '/marches-prives': typeof MarchesPrivesRoute
   '/marches-publics/$ref': typeof MarchesPublicsRefRoute
@@ -85,6 +93,7 @@ export interface FileRoutesById {
   '/brigades': typeof BrigadesRoute
   '/configuration': typeof ConfigurationRoute
   '/dashboard': typeof DashboardRoute
+  '/dossiers': typeof DossiersRoute
   '/facturation': typeof FacturationRoute
   '/marches-prives': typeof MarchesPrivesRoute
   '/marches-publics/$ref': typeof MarchesPublicsRefRoute
@@ -97,6 +106,7 @@ export interface FileRouteTypes {
     | '/brigades'
     | '/configuration'
     | '/dashboard'
+    | '/dossiers'
     | '/facturation'
     | '/marches-prives'
     | '/marches-publics/$ref'
@@ -107,6 +117,7 @@ export interface FileRouteTypes {
     | '/brigades'
     | '/configuration'
     | '/dashboard'
+    | '/dossiers'
     | '/facturation'
     | '/marches-prives'
     | '/marches-publics/$ref'
@@ -117,6 +128,7 @@ export interface FileRouteTypes {
     | '/brigades'
     | '/configuration'
     | '/dashboard'
+    | '/dossiers'
     | '/facturation'
     | '/marches-prives'
     | '/marches-publics/$ref'
@@ -128,6 +140,7 @@ export interface RootRouteChildren {
   BrigadesRoute: typeof BrigadesRoute
   ConfigurationRoute: typeof ConfigurationRoute
   DashboardRoute: typeof DashboardRoute
+  DossiersRoute: typeof DossiersRoute
   FacturationRoute: typeof FacturationRoute
   MarchesPrivesRoute: typeof MarchesPrivesRoute
   MarchesPublicsRefRoute: typeof MarchesPublicsRefRoute
@@ -162,6 +175,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dossiers': {
+      id: '/dossiers'
+      path: '/dossiers'
+      fullPath: '/dossiers'
+      preLoaderRoute: typeof DossiersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/facturation': {
@@ -200,6 +220,7 @@ const rootRouteChildren: RootRouteChildren = {
   BrigadesRoute: BrigadesRoute,
   ConfigurationRoute: ConfigurationRoute,
   DashboardRoute: DashboardRoute,
+  DossiersRoute: DossiersRoute,
   FacturationRoute: FacturationRoute,
   MarchesPrivesRoute: MarchesPrivesRoute,
   MarchesPublicsRefRoute: MarchesPublicsRefRoute,

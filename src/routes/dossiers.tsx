@@ -13,7 +13,7 @@ import { fmtDate, fmtMAD } from "@/lib/ingeto-data";
 
 export const Route = createFileRoute("/dossiers")({
   validateSearch: (search: Record<string, unknown>): { tab?: "dossiers" | "relances" } => ({
-    tab: search.tab === "relances" ? "relances" : "dossiers",
+    tab: search['tab'] === "relances" ? "relances" : "dossiers",
   }),
   head: () => ({
     meta: [
