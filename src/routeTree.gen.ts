@@ -10,33 +10,141 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BrigadesRouteImport } from './routes/brigades'
+import { Route as ConfigurationRouteImport } from './routes/configuration'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as DossiersRouteImport } from './routes/dossiers'
+import { Route as FacturationRouteImport } from './routes/facturation'
+import { Route as MarchesPrivesRouteImport } from './routes/marches-prives'
+import { Route as MarchesPublicsIndexRouteImport } from './routes/marches-publics.index'
+import { Route as MarchesPublicsRefRouteImport } from './routes/marches-publics.$ref'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BrigadesRoute = BrigadesRouteImport.update({
+  id: '/brigades',
+  path: '/brigades',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ConfigurationRoute = ConfigurationRouteImport.update({
+  id: '/configuration',
+  path: '/configuration',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DossiersRoute = DossiersRouteImport.update({
+  id: '/dossiers',
+  path: '/dossiers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FacturationRoute = FacturationRouteImport.update({
+  id: '/facturation',
+  path: '/facturation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarchesPrivesRoute = MarchesPrivesRouteImport.update({
+  id: '/marches-prives',
+  path: '/marches-prives',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarchesPublicsIndexRoute = MarchesPublicsIndexRouteImport.update({
+  id: '/marches-publics/',
+  path: '/marches-publics/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarchesPublicsRefRoute = MarchesPublicsRefRouteImport.update({
+  id: '/marches-publics/$ref',
+  path: '/marches-publics/$ref',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/brigades': typeof BrigadesRoute
+  '/configuration': typeof ConfigurationRoute
+  '/dashboard': typeof DashboardRoute
+  '/dossiers': typeof DossiersRoute
+  '/facturation': typeof FacturationRoute
+  '/marches-prives': typeof MarchesPrivesRoute
+  '/marches-publics/$ref': typeof MarchesPublicsRefRoute
+  '/marches-publics/': typeof MarchesPublicsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/brigades': typeof BrigadesRoute
+  '/configuration': typeof ConfigurationRoute
+  '/dashboard': typeof DashboardRoute
+  '/dossiers': typeof DossiersRoute
+  '/facturation': typeof FacturationRoute
+  '/marches-prives': typeof MarchesPrivesRoute
+  '/marches-publics/$ref': typeof MarchesPublicsRefRoute
+  '/marches-publics': typeof MarchesPublicsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/brigades': typeof BrigadesRoute
+  '/configuration': typeof ConfigurationRoute
+  '/dashboard': typeof DashboardRoute
+  '/dossiers': typeof DossiersRoute
+  '/facturation': typeof FacturationRoute
+  '/marches-prives': typeof MarchesPrivesRoute
+  '/marches-publics/$ref': typeof MarchesPublicsRefRoute
+  '/marches-publics/': typeof MarchesPublicsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/brigades'
+    | '/configuration'
+    | '/dashboard'
+    | '/dossiers'
+    | '/facturation'
+    | '/marches-prives'
+    | '/marches-publics/$ref'
+    | '/marches-publics/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/brigades'
+    | '/configuration'
+    | '/dashboard'
+    | '/dossiers'
+    | '/facturation'
+    | '/marches-prives'
+    | '/marches-publics/$ref'
+    | '/marches-publics'
+  id:
+    | '__root__'
+    | '/'
+    | '/brigades'
+    | '/configuration'
+    | '/dashboard'
+    | '/dossiers'
+    | '/facturation'
+    | '/marches-prives'
+    | '/marches-publics/$ref'
+    | '/marches-publics/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BrigadesRoute: typeof BrigadesRoute
+  ConfigurationRoute: typeof ConfigurationRoute
+  DashboardRoute: typeof DashboardRoute
+  DossiersRoute: typeof DossiersRoute
+  FacturationRoute: typeof FacturationRoute
+  MarchesPrivesRoute: typeof MarchesPrivesRoute
+  MarchesPublicsRefRoute: typeof MarchesPublicsRefRoute
+  MarchesPublicsIndexRoute: typeof MarchesPublicsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +156,75 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/brigades': {
+      id: '/brigades'
+      path: '/brigades'
+      fullPath: '/brigades'
+      preLoaderRoute: typeof BrigadesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/configuration': {
+      id: '/configuration'
+      path: '/configuration'
+      fullPath: '/configuration'
+      preLoaderRoute: typeof ConfigurationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dossiers': {
+      id: '/dossiers'
+      path: '/dossiers'
+      fullPath: '/dossiers'
+      preLoaderRoute: typeof DossiersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/facturation': {
+      id: '/facturation'
+      path: '/facturation'
+      fullPath: '/facturation'
+      preLoaderRoute: typeof FacturationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/marches-prives': {
+      id: '/marches-prives'
+      path: '/marches-prives'
+      fullPath: '/marches-prives'
+      preLoaderRoute: typeof MarchesPrivesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/marches-publics/': {
+      id: '/marches-publics/'
+      path: '/marches-publics'
+      fullPath: '/marches-publics/'
+      preLoaderRoute: typeof MarchesPublicsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/marches-publics/$ref': {
+      id: '/marches-publics/$ref'
+      path: '/marches-publics/$ref'
+      fullPath: '/marches-publics/$ref'
+      preLoaderRoute: typeof MarchesPublicsRefRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BrigadesRoute: BrigadesRoute,
+  ConfigurationRoute: ConfigurationRoute,
+  DashboardRoute: DashboardRoute,
+  DossiersRoute: DossiersRoute,
+  FacturationRoute: FacturationRoute,
+  MarchesPrivesRoute: MarchesPrivesRoute,
+  MarchesPublicsRefRoute: MarchesPublicsRefRoute,
+  MarchesPublicsIndexRoute: MarchesPublicsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
