@@ -11,6 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ConfigurationRouteImport } from './routes/configuration'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as MarchesPrivesRouteImport } from './routes/marches-prives'
+import { Route as MarchesPublicsIndexRouteImport } from './routes/marches-publics.index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +25,74 @@ const ConfigurationRoute = ConfigurationRouteImport.update({
   path: '/configuration',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarchesPrivesRoute = MarchesPrivesRouteImport.update({
+  id: '/marches-prives',
+  path: '/marches-prives',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarchesPublicsIndexRoute = MarchesPublicsIndexRouteImport.update({
+  id: '/marches-publics/',
+  path: '/marches-publics/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/configuration': typeof ConfigurationRoute
+  '/dashboard': typeof DashboardRoute
+  '/marches-prives': typeof MarchesPrivesRoute
+  '/marches-publics/': typeof MarchesPublicsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/configuration': typeof ConfigurationRoute
+  '/dashboard': typeof DashboardRoute
+  '/marches-prives': typeof MarchesPrivesRoute
+  '/marches-publics': typeof MarchesPublicsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/configuration': typeof ConfigurationRoute
+  '/dashboard': typeof DashboardRoute
+  '/marches-prives': typeof MarchesPrivesRoute
+  '/marches-publics/': typeof MarchesPublicsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/configuration'
+  fullPaths:
+    | '/'
+    | '/configuration'
+    | '/dashboard'
+    | '/marches-prives'
+    | '/marches-publics/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/configuration'
-  id: '__root__' | '/' | '/configuration'
+  to:
+    | '/'
+    | '/configuration'
+    | '/dashboard'
+    | '/marches-prives'
+    | '/marches-publics'
+  id:
+    | '__root__'
+    | '/'
+    | '/configuration'
+    | '/dashboard'
+    | '/marches-prives'
+    | '/marches-publics/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ConfigurationRoute: typeof ConfigurationRoute
+  DashboardRoute: typeof DashboardRoute
+  MarchesPrivesRoute: typeof MarchesPrivesRoute
+  MarchesPublicsIndexRoute: typeof MarchesPublicsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +111,36 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ConfigurationRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/marches-prives': {
+      id: '/marches-prives'
+      path: '/marches-prives'
+      fullPath: '/marches-prives'
+      preLoaderRoute: typeof MarchesPrivesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/marches-publics/': {
+      id: '/marches-publics/'
+      path: '/marches-publics'
+      fullPath: '/marches-publics/'
+      preLoaderRoute: typeof MarchesPublicsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ConfigurationRoute: ConfigurationRoute,
+  DashboardRoute: DashboardRoute,
+  MarchesPrivesRoute: MarchesPrivesRoute,
+  MarchesPublicsIndexRoute: MarchesPublicsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
