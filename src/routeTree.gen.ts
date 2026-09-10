@@ -10,23 +10,20 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as BrigadesRouteImport } from './routes/brigades'
 import { Route as ConfigurationRouteImport } from './routes/configuration'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as DossiersRouteImport } from './routes/dossiers'
 import { Route as FacturationRouteImport } from './routes/facturation'
-import { Route as MarchesPrivesRouteImport } from './routes/marches-prives'
+import { Route as BrigadesIndexRouteImport } from './routes/brigades.index'
+import { Route as BrigadesIdRouteImport } from './routes/brigades.$id'
+import { Route as MarchesPrivesIndexRouteImport } from './routes/marches-prives.index'
+import { Route as MarchesPrivesRefRouteImport } from './routes/marches-prives.$ref'
 import { Route as MarchesPublicsIndexRouteImport } from './routes/marches-publics.index'
 import { Route as MarchesPublicsRefRouteImport } from './routes/marches-publics.$ref'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BrigadesRoute = BrigadesRouteImport.update({
-  id: '/brigades',
-  path: '/brigades',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ConfigurationRoute = ConfigurationRouteImport.update({
@@ -49,9 +46,24 @@ const FacturationRoute = FacturationRouteImport.update({
   path: '/facturation',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MarchesPrivesRoute = MarchesPrivesRouteImport.update({
-  id: '/marches-prives',
-  path: '/marches-prives',
+const BrigadesIndexRoute = BrigadesIndexRouteImport.update({
+  id: '/brigades/',
+  path: '/brigades/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BrigadesIdRoute = BrigadesIdRouteImport.update({
+  id: '/brigades/$id',
+  path: '/brigades/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarchesPrivesIndexRoute = MarchesPrivesIndexRouteImport.update({
+  id: '/marches-prives/',
+  path: '/marches-prives/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarchesPrivesRefRoute = MarchesPrivesRefRouteImport.update({
+  id: '/marches-prives/$ref',
+  path: '/marches-prives/$ref',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MarchesPublicsIndexRoute = MarchesPublicsIndexRouteImport.update({
@@ -67,83 +79,97 @@ const MarchesPublicsRefRoute = MarchesPublicsRefRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/brigades': typeof BrigadesRoute
   '/configuration': typeof ConfigurationRoute
   '/dashboard': typeof DashboardRoute
   '/dossiers': typeof DossiersRoute
   '/facturation': typeof FacturationRoute
-  '/marches-prives': typeof MarchesPrivesRoute
+  '/brigades/$id': typeof BrigadesIdRoute
+  '/marches-prives/$ref': typeof MarchesPrivesRefRoute
   '/marches-publics/$ref': typeof MarchesPublicsRefRoute
+  '/brigades/': typeof BrigadesIndexRoute
+  '/marches-prives/': typeof MarchesPrivesIndexRoute
   '/marches-publics/': typeof MarchesPublicsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/brigades': typeof BrigadesRoute
   '/configuration': typeof ConfigurationRoute
   '/dashboard': typeof DashboardRoute
   '/dossiers': typeof DossiersRoute
   '/facturation': typeof FacturationRoute
-  '/marches-prives': typeof MarchesPrivesRoute
+  '/brigades/$id': typeof BrigadesIdRoute
+  '/marches-prives/$ref': typeof MarchesPrivesRefRoute
   '/marches-publics/$ref': typeof MarchesPublicsRefRoute
+  '/brigades': typeof BrigadesIndexRoute
+  '/marches-prives': typeof MarchesPrivesIndexRoute
   '/marches-publics': typeof MarchesPublicsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/brigades': typeof BrigadesRoute
   '/configuration': typeof ConfigurationRoute
   '/dashboard': typeof DashboardRoute
   '/dossiers': typeof DossiersRoute
   '/facturation': typeof FacturationRoute
-  '/marches-prives': typeof MarchesPrivesRoute
+  '/brigades/$id': typeof BrigadesIdRoute
+  '/marches-prives/$ref': typeof MarchesPrivesRefRoute
   '/marches-publics/$ref': typeof MarchesPublicsRefRoute
+  '/brigades/': typeof BrigadesIndexRoute
+  '/marches-prives/': typeof MarchesPrivesIndexRoute
   '/marches-publics/': typeof MarchesPublicsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/brigades'
     | '/configuration'
     | '/dashboard'
     | '/dossiers'
     | '/facturation'
-    | '/marches-prives'
+    | '/brigades/$id'
+    | '/marches-prives/$ref'
     | '/marches-publics/$ref'
+    | '/brigades/'
+    | '/marches-prives/'
     | '/marches-publics/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/brigades'
     | '/configuration'
     | '/dashboard'
     | '/dossiers'
     | '/facturation'
-    | '/marches-prives'
+    | '/brigades/$id'
+    | '/marches-prives/$ref'
     | '/marches-publics/$ref'
+    | '/brigades'
+    | '/marches-prives'
     | '/marches-publics'
   id:
     | '__root__'
     | '/'
-    | '/brigades'
     | '/configuration'
     | '/dashboard'
     | '/dossiers'
     | '/facturation'
-    | '/marches-prives'
+    | '/brigades/$id'
+    | '/marches-prives/$ref'
     | '/marches-publics/$ref'
+    | '/brigades/'
+    | '/marches-prives/'
     | '/marches-publics/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  BrigadesRoute: typeof BrigadesRoute
   ConfigurationRoute: typeof ConfigurationRoute
   DashboardRoute: typeof DashboardRoute
   DossiersRoute: typeof DossiersRoute
   FacturationRoute: typeof FacturationRoute
-  MarchesPrivesRoute: typeof MarchesPrivesRoute
+  BrigadesIdRoute: typeof BrigadesIdRoute
+  MarchesPrivesRefRoute: typeof MarchesPrivesRefRoute
   MarchesPublicsRefRoute: typeof MarchesPublicsRefRoute
+  BrigadesIndexRoute: typeof BrigadesIndexRoute
+  MarchesPrivesIndexRoute: typeof MarchesPrivesIndexRoute
   MarchesPublicsIndexRoute: typeof MarchesPublicsIndexRoute
 }
 
@@ -154,13 +180,6 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/brigades': {
-      id: '/brigades'
-      path: '/brigades'
-      fullPath: '/brigades'
-      preLoaderRoute: typeof BrigadesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/configuration': {
@@ -191,11 +210,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FacturationRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/marches-prives': {
-      id: '/marches-prives'
+    '/brigades/': {
+      id: '/brigades/'
+      path: '/brigades'
+      fullPath: '/brigades/'
+      preLoaderRoute: typeof BrigadesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/brigades/$id': {
+      id: '/brigades/$id'
+      path: '/brigades/$id'
+      fullPath: '/brigades/$id'
+      preLoaderRoute: typeof BrigadesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/marches-prives/': {
+      id: '/marches-prives/'
       path: '/marches-prives'
-      fullPath: '/marches-prives'
-      preLoaderRoute: typeof MarchesPrivesRouteImport
+      fullPath: '/marches-prives/'
+      preLoaderRoute: typeof MarchesPrivesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/marches-prives/$ref': {
+      id: '/marches-prives/$ref'
+      path: '/marches-prives/$ref'
+      fullPath: '/marches-prives/$ref'
+      preLoaderRoute: typeof MarchesPrivesRefRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/marches-publics/': {
@@ -217,13 +257,15 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  BrigadesRoute: BrigadesRoute,
   ConfigurationRoute: ConfigurationRoute,
   DashboardRoute: DashboardRoute,
   DossiersRoute: DossiersRoute,
   FacturationRoute: FacturationRoute,
-  MarchesPrivesRoute: MarchesPrivesRoute,
+  BrigadesIdRoute: BrigadesIdRoute,
+  MarchesPrivesRefRoute: MarchesPrivesRefRoute,
   MarchesPublicsRefRoute: MarchesPublicsRefRoute,
+  BrigadesIndexRoute: BrigadesIndexRoute,
+  MarchesPrivesIndexRoute: MarchesPrivesIndexRoute,
   MarchesPublicsIndexRoute: MarchesPublicsIndexRoute,
 }
 export const routeTree = rootRouteImport

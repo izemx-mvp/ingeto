@@ -8,13 +8,18 @@ import {
   initialInvoices,
   initialPrivateDeals,
   initialPublicMarkets,
+  invoiceUnitTemplates,
+  withDealDetail,
   type Brigade,
   type Category,
   type Invoice,
+  type InvoiceStatus,
+  type InvoiceUnit,
   type PrivateDeal,
   type PrivateStatus,
   type PublicMarket,
 } from "./ingeto-data";
+
 
 export type Config = {
   categories: Category[];
@@ -101,14 +106,19 @@ type Store = {
   deals: PrivateDeal[];
   importDeal: (fileName: string) => void;
   analyseDeal: (id: string) => PrivateStatus;
+  generateDealDocuments: (id: string) => void;
+  toggleDealCheck: (id: string, index: number) => void;
   brigades: Brigade[];
-  relanceBrigade: (id: string) => void;
+  relanceBrigade: (id: string, message?: string) => void;
+  assignMission: (id: string, marketRef: string, chantier: string) => void;
   invoices: Invoice[];
   generateDecompte: () => Invoice;
+  setInvoiceStatus: (id: string, status: InvoiceStatus) => void;
   activity: Activity[];
   markActivityRead: () => void;
   pushActivity: (label: string) => void;
 };
+
 
 const StoreContext = createContext<Store | null>(null);
 
@@ -132,7 +142,10 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
   });
   const [configValidated, setConfigValidated] = useState(false);
   const [markets, setMarkets] = useState<PublicMarket[]>(initialPublicMarkets);
-  const [deals, setDeals] = useState<PrivateDeal[]>(initialPrivateDeals);
+  const [deals, setDeals] = useState<PrivateDeal[]>(() =>
+    initialPrivateDeals.map(withDealDetail),
+  );
+
   const [brigades, setBrigades] = useState<Brigade[]>(initialBrigades);
   const [invoices, setInvoices] = useState<Invoice[]>(initialInvoices);
   const [activity, setActivity] = useState<Activity[]>(initialActivity);
@@ -281,7 +294,7 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
       const n = 49 + deals.filter((d) => d.ref.startsWith("PRV-2026")).length;
       const ref = `PRV-2026-${String(n).padStart(3, "0")}`;
       setDeals((prev) => [
-        {
+        withDealDetail({
           id: ref,
           ref,
           client: "Client à qualifier",
@@ -292,9 +305,10 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
           budget: 0,
           status: "À analyser",
           justification: "",
-        },
+        }),
         ...prev,
       ]);
+
       pushActivity(`Document « ${fileName} » importé dans les marchés privés (${ref})`);
     },
     [deals, pushActivity],
@@ -327,57 +341,119 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
           justification = `Le type de client « ${deal.clientType} » n'est pas ciblé dans vos critères marché privé.`;
         }
       }
-      setDeals((prev) => prev.map((d) => (d.id === id ? { ...d, status, justification } : d)));
+      setDeals((prev) =>
+        prev.map((d) =>
+          d.id === id
+            ? withDealDetail({
+                ...d,
+                status,
+                justification,
+                checklist: undefined,
+                history: [
+                  ...(d.history ?? []),
+                  {
+                    date: `${new Date().toISOString().slice(0, 10)} ${String(new Date().getHours()).padStart(2, "0")}:${String(new Date().getMinutes()).padStart(2, "0")}`,
+                    label: `Analyse IA terminée — ${status}`,
+                  },
+                ],
+                documentsGenerated: false,
+              })
+            : d,
+        ),
+      );
+
       pushActivity(`Agent Marché Privé a analysé ${id} — ${status.toLowerCase()}`);
       return status;
     },
     [deals, config, pushActivity],
   );
 
+  const nowStamp = () => {
+    const d = new Date();
+    return `${d.toISOString().slice(0, 10)} ${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
+  };
+
   const relanceBrigade = useCallback(
-    (id: string) => {
+    (id: string, message?: string) => {
       const today = new Date().toISOString().slice(0, 10);
       setBrigades((prev) =>
-        prev.map((b) => (b.id === id ? { ...b, relanceSentAt: today, status: "Active" } : b)),
+        prev.map((b) =>
+          b.id === id
+            ? {
+                ...b,
+                relanceSentAt: today,
+                status: "Active",
+                comms: [
+                  {
+                    date: nowStamp(),
+                    kind: "Relance" as const,
+                    text:
+                      message?.trim() ||
+                      "Relance de la direction : rapport de terrain demandé sous 24 h.",
+                  },
+                  ...b.comms,
+                ],
+              }
+            : b,
+        ),
       );
       pushActivity(`Relance envoyée à ${brigades.find((b) => b.id === id)?.name ?? id}`);
     },
     [brigades, pushActivity],
   );
 
+  /** Affecte une brigade à un dossier : chantier, statut et journal mis à jour. */
+  const assignMission = useCallback(
+    (id: string, marketRef: string, chantier: string) => {
+      setBrigades((prev) =>
+        prev.map((b) =>
+          b.id === id
+            ? {
+                ...b,
+                marketRef,
+                chantier,
+                status: "En intervention",
+                progress: 0,
+                comms: [
+                  {
+                    date: nowStamp(),
+                    kind: "Mission" as const,
+                    text: `Nouvelle affectation : ${marketRef} — ${chantier}`,
+                  },
+                  ...b.comms,
+                ],
+              }
+            : b,
+        ),
+      );
+      pushActivity(
+        `${brigades.find((b) => b.id === id)?.name ?? id} affectée au dossier ${marketRef}`,
+      );
+    },
+    [brigades, pushActivity],
+  );
+
   const generateDecompte = useCallback((): Invoice => {
-    const pool: { marketRef: string; client: string; units: Invoice["units"] }[] = [
+    const pool: { marketRef: string; client: string; units: InvoiceUnit[] }[] = [
       {
         marketRef: "AO-2026-ONCF-207",
         client: "ONCF",
-        units: [
-          { label: "Km de tracé levé", qty: 11, unitPrice: 42000 },
-          { label: "Point GNSS rattaché", qty: 380, unitPrice: 180 },
-        ],
+        units: invoiceUnitTemplates["AO-2026-ONCF-207"] ?? [],
       },
       {
         marketRef: "AO-2026-OCP-089",
         client: "OCP",
-        units: [
-          { label: "Station de scan 3D", qty: 8, unitPrice: 9800 },
-          { label: "Traitement nuage de points (jour)", qty: 5, unitPrice: 4600 },
-        ],
+        units: invoiceUnitTemplates["AO-2026-OCP-089"] ?? [],
       },
       {
         marketRef: "AO-2026-CT-TEM-023",
         client: "Commune de Témara",
-        units: [
-          { label: "Borne implantée", qty: 128, unitPrice: 420 },
-          { label: "PV de bornage", qty: 6, unitPrice: 1800 },
-        ],
+        units: invoiceUnitTemplates["AO-2026-CT-TEM-023"] ?? [],
       },
       {
         marketRef: "AO-2026-CT-AGD-009",
         client: "Commune d'Agadir",
-        units: [
-          { label: "Profil bathymétrique (km)", qty: 22, unitPrice: 6800 },
-          { label: "Sondage de contrôle", qty: 40, unitPrice: 640 },
-        ],
+        units: invoiceUnitTemplates["AO-2026-CT-AGD-009"] ?? [],
       },
     ];
     const pick = pool[invoices.length % pool.length]!;
@@ -386,17 +462,95 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
     const inv: Invoice = {
       id: ref,
       ref,
+      decompteNo: invoices.filter((i) => i.marketRef === marketRef).length + 1,
       marketRef,
       client,
       period: "Septembre 2026",
       units,
       amount: units.reduce((s, u) => s + u.qty * u.unitPrice, 0),
       status: "Brouillon",
+      history: [{ date: nowStamp(), label: "Décompte calculé par l'agent Facturation" }],
     };
     setInvoices((prev) => [inv, ...prev]);
     pushActivity(`Agent Facturation a généré le décompte ${ref} (${client})`);
     return inv;
   }, [invoices, pushActivity]);
+
+  /** Transitions de statut : Brouillon → Émis → Payé. */
+  const setInvoiceStatus = useCallback(
+    (id: string, status: InvoiceStatus) => {
+      const today = new Date().toISOString().slice(0, 10);
+      setInvoices((prev) =>
+        prev.map((i) =>
+          i.id === id
+            ? {
+                ...i,
+                status,
+                ...(status === "Émis"
+                  ? {
+                      issuedAt: today,
+                      dueAt: new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 10),
+                    }
+                  : {}),
+                ...(status === "Payé" ? { paidAt: today } : {}),
+                history: [
+                  ...(i.history ?? []),
+                  {
+                    date: nowStamp(),
+                    label:
+                      status === "Émis"
+                        ? "Décompte émis au maître d'ouvrage"
+                        : status === "Payé"
+                          ? "Encaissement constaté"
+                          : "Décompte remis en brouillon",
+                  },
+                ],
+              }
+            : i,
+        ),
+      );
+      pushActivity(`Décompte ${id} — statut « ${status} »`);
+    },
+    [pushActivity],
+  );
+
+  /** Génère les pièces de l'offre commerciale d'une consultation privée. */
+  const generateDealDocuments = useCallback(
+    (id: string) => {
+      setDeals((prev) =>
+        prev.map((d) =>
+          d.id === id
+            ? {
+                ...d,
+                documentsGenerated: true,
+                history: [
+                  ...(d.history ?? []),
+                  { date: nowStamp(), label: "Agent Documents a généré l'offre commerciale" },
+                ],
+              }
+            : d,
+        ),
+      );
+      pushActivity(`Agent Documents a généré l'offre commerciale de ${id}`);
+    },
+    [pushActivity],
+  );
+
+  const toggleDealCheck = useCallback((id: string, index: number) => {
+    setDeals((prev) =>
+      prev.map((d) =>
+        d.id === id
+          ? {
+              ...d,
+              checklist: (d.checklist ?? []).map((c, i) =>
+                i === index ? { ...c, done: !c.done } : c,
+              ),
+            }
+          : d,
+      ),
+    );
+  }, []);
+
 
   const markActivityRead = useCallback(
     () => setActivity((prev) => prev.map((a) => ({ ...a, unread: false }))),
@@ -420,10 +574,15 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
       deals,
       importDeal,
       analyseDeal,
+      generateDealDocuments,
+      toggleDealCheck,
       brigades,
       relanceBrigade,
+      assignMission,
       invoices,
       generateDecompte,
+      setInvoiceStatus,
+
       activity,
       markActivityRead,
       pushActivity,
@@ -443,10 +602,15 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
       deals,
       importDeal,
       analyseDeal,
+      generateDealDocuments,
+      toggleDealCheck,
       brigades,
       relanceBrigade,
+      assignMission,
       invoices,
       generateDecompte,
+      setInvoiceStatus,
+
       activity,
       markActivityRead,
       pushActivity,

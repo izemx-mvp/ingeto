@@ -26,7 +26,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useStore } from "@/lib/app-store";
 import { fmtDate, fmtMAD } from "@/lib/ingeto-data";
 
-export const Route = createFileRoute("/marches-prives")({
+export const Route = createFileRoute("/marches-prives/")({
   head: () => ({
     meta: [
       { title: "Marchés Privés — INGETO Control" },
