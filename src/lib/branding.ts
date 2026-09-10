@@ -1,5 +1,6 @@
-export const LOGO = "https://ingeto.ma/wp-content/uploads/2023/01/logo-transparent-scaled.png";
-export const FAVICON = "https://ingeto.ma/favicon.ico";
+import logo from "@/assets/ingeto-logo.png";
+
+export const LOGO = logo;
 export const USER = {
   name: "M. Abdelmoutalib Karroum",
   role: "Directeur — INGETO",
