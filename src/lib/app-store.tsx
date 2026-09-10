@@ -137,6 +137,36 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
   const [invoices, setInvoices] = useState<Invoice[]>(initialInvoices);
   const [activity, setActivity] = useState<Activity[]>(initialActivity);
 
+  // La session conserve la configuration et l'état de la sidebar entre les rechargements.
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem("ingeto-session");
+      if (!raw) return;
+      const saved = JSON.parse(raw) as {
+        config?: Config;
+        configValidated?: boolean;
+        sidebarCollapsed?: boolean;
+      };
+      if (saved.config) setConfig(saved.config);
+      if (saved.configValidated) setConfigValidated(true);
+      if (saved.sidebarCollapsed) setSidebarCollapsed(true);
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  useEffect(() => {
+    try {
+      sessionStorage.setItem(
+        "ingeto-session",
+        JSON.stringify({ config, configValidated, sidebarCollapsed }),
+      );
+    } catch {
+      /* ignore */
+    }
+  }, [config, configValidated, sidebarCollapsed]);
+
+
   const pushActivity = useCallback((label: string) => {
     setActivity((prev) => [
       { id: `${Date.now()}-${Math.random()}`, label, time: "à l'instant", unread: true },
