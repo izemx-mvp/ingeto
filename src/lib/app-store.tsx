@@ -193,7 +193,7 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
           if (m.ref !== ref) return m;
           const i = MARKET_STEPS.indexOf(m.status);
           if (i >= MARKET_STEPS.length - 1) return m;
-          const next = MARKET_STEPS[i + 1];
+          const next = MARKET_STEPS[i + 1]!;
           return {
             ...m,
             status: next,
@@ -228,7 +228,7 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
           const i = Math.max(MARKET_STEPS.indexOf(m.status), 3);
           return {
             ...m,
-            status: MARKET_STEPS[i],
+            status: MARKET_STEPS[i]!,
             documentsGenerated: true,
             checklist: m.checklist.map((c) => ({ ...c, done: true })),
             history: [
@@ -281,7 +281,7 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
         const text = deal.objet.toLowerCase();
         const excluded = config.keywordsExclude.some((k) => k.trim() && text.includes(k.toLowerCase()));
         const matchesCategory = config.categories.some((c) =>
-          text.includes(c.split(" ")[0].toLowerCase()),
+          text.includes((c.split(" ")[0] ?? "").toLowerCase()),
         );
         if (excluded) {
           status = "Ne correspond pas";
