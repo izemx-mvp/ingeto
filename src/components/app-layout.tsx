@@ -78,22 +78,30 @@ export function AppLayout({
   return (
     <div className="aurora-bg min-h-screen bg-background">
       <motion.aside
-        animate={{ width: sidebarCollapsed ? 64 : 260 }}
+        animate={{ width: sidebarCollapsed ? 76 : 276 }}
         transition={{ duration: 0.2, ease: "easeInOut" }}
         className="fixed inset-y-0 left-0 z-40 flex flex-col overflow-hidden border-r border-border bg-card/85 backdrop-blur-xl"
       >
         <div
           className={cn(
-            "flex h-20 shrink-0 items-center border-b border-border px-3",
-            sidebarCollapsed ? "justify-center" : "justify-start px-5",
+            "flex shrink-0 items-center border-b border-border",
+            sidebarCollapsed ? "h-24 justify-center px-2" : "h-28 justify-start px-5",
           )}
         >
-          <img
-            src={LOGO}
-            alt="INGETO"
-            className={cn("w-auto object-contain", sidebarCollapsed ? "h-7" : "h-9")}
-          />
+          <div
+            className={cn(
+              "flex items-center justify-center rounded-xl bg-white/70 shadow-sm ring-1 ring-primary/10",
+              sidebarCollapsed ? "h-14 w-14 p-1.5" : "h-20 w-full p-3",
+            )}
+          >
+            <img
+              src={LOGO}
+              alt="INGETO — cabinet d'ingénierie topographique"
+              className="h-full w-auto max-w-full object-contain"
+            />
+          </div>
         </div>
+
         <nav className="flex flex-1 flex-col gap-1 overflow-y-auto p-2">
           {NAV.map(({ to, label, icon: Icon }) => {
             const active = pathname === to || pathname.startsWith(to + "/");
@@ -157,7 +165,7 @@ export function AppLayout({
       </motion.aside>
 
       <motion.div
-        animate={{ marginLeft: sidebarCollapsed ? 64 : 260 }}
+        animate={{ marginLeft: sidebarCollapsed ? 76 : 276 }}
         transition={{ duration: 0.2, ease: "easeInOut" }}
         className="flex min-h-screen flex-col"
       >
