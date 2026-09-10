@@ -69,7 +69,7 @@ export function VeilleButton({ variant = "default" }: { variant?: "default" | "o
       )}
 
       <Dialog open={open} onOpenChange={() => {}}>
-        <DialogContent className="max-w-md" showCloseButton={false}>
+        <DialogContent className="max-w-md">
           <DialogTitle className="font-display text-lg">Veille en cours</DialogTitle>
           <Progress value={(step / STEPS.length) * 100} className="mt-2" />
           <div className="mt-4 space-y-2">
