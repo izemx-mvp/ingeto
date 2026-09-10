@@ -316,36 +316,42 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
   );
 
   const generateDecompte = useCallback((): Invoice => {
-    const pool = Object.entries(
-      // marchés ayant un modèle d'unités d'œuvre
+    const pool: { marketRef: string; client: string; units: Invoice["units"] }[] = [
       {
-        "AO-2026-ONCF-207": "ONCF",
-        "AO-2026-OCP-089": "OCP",
-        "AO-2026-CT-TEM-023": "Commune de Témara",
-        "AO-2026-CT-AGD-009": "Commune d'Agadir",
-      } as Record<string, string>,
-    );
-    const [marketRef, client] = pool[invoices.length % pool.length];
-    const units = (
-      {
-        "AO-2026-ONCF-207": [
+        marketRef: "AO-2026-ONCF-207",
+        client: "ONCF",
+        units: [
           { label: "Km de tracé levé", qty: 11, unitPrice: 42000 },
           { label: "Point GNSS rattaché", qty: 380, unitPrice: 180 },
         ],
-        "AO-2026-OCP-089": [
+      },
+      {
+        marketRef: "AO-2026-OCP-089",
+        client: "OCP",
+        units: [
           { label: "Station de scan 3D", qty: 8, unitPrice: 9800 },
           { label: "Traitement nuage de points (jour)", qty: 5, unitPrice: 4600 },
         ],
-        "AO-2026-CT-TEM-023": [
+      },
+      {
+        marketRef: "AO-2026-CT-TEM-023",
+        client: "Commune de Témara",
+        units: [
           { label: "Borne implantée", qty: 128, unitPrice: 420 },
           { label: "PV de bornage", qty: 6, unitPrice: 1800 },
         ],
-        "AO-2026-CT-AGD-009": [
+      },
+      {
+        marketRef: "AO-2026-CT-AGD-009",
+        client: "Commune d'Agadir",
+        units: [
           { label: "Profil bathymétrique (km)", qty: 22, unitPrice: 6800 },
           { label: "Sondage de contrôle", qty: 40, unitPrice: 640 },
         ],
-      } as Record<string, Invoice["units"]>
-    )[marketRef];
+      },
+    ];
+    const pick = pool[invoices.length % pool.length]!;
+    const { marketRef, client, units } = pick;
     const ref = `DEC-2026-${String(39 + invoices.length - initialInvoices.length).padStart(3, "0")}`;
     const inv: Invoice = {
       id: ref,
