@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
+import { createContext, useCallback, useEffect, useContext, useMemo, useState, type ReactNode } from "react";
 import {
   CATEGORIES,
   MARKET_STEPS,
